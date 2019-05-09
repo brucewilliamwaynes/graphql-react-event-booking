@@ -1,0 +1,7 @@
+{
+    "env" : {
+        "MONGO_USER" : "atlasAdmin07",
+        "MONGO_PASSWORD" : "QwVqSFndPIqpE3eR",
+        "MONGO_DB" : "DatabaseDev"
+    }
+}
