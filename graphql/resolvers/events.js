@@ -1,5 +1,5 @@
 const Event = require('../../models/event');
-
+const User = require('../../models/user');
 const { transformEvent } = require('./merge') ;
 
 module.exports = {
@@ -17,14 +17,18 @@ module.exports = {
         });
     },
 
-    createEvent : args => {
+    createEvent : (args, req) => {
         
+        if(!req.isAuth){
+            throw new Error('Is not authenticated!');
+        }
+
         const event = new Event( {
             title : args.eventInput.title,
             description : args.eventInput.description,
             price : +args.eventInput.price,
             date : new Date(args.eventInput.date),
-            creator : 'userID from MongoDB'
+            creator : req.userId
         });
         let createdEvent;
         return event
@@ -32,7 +36,7 @@ module.exports = {
         .then(result => {
             createdEvent = transformEvent(result);
 
-            return User.findById('userID by MONGODB')
+            return User.findById(req.userId);
         })
         .then(user => {
             if(!user) {
