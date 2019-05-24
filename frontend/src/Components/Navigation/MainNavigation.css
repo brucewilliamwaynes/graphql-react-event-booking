@@ -1,0 +1,45 @@
+.main-navigation {
+    position : fixed;
+    left : 0;
+    top : 0;
+    width: 100%;
+    height: 3.5rem;
+    background: rgb(77, 234, 245);
+    padding : 0 1rem;
+    display : flex;
+    align-items: center;
+}
+
+.main-navigation_logo h1 {
+    margin : 0;
+    font-size: 1.5rem;
+}
+
+.main-navigation_items {
+    margin-left: 1.5rem;
+}
+
+.main-navigation_items ul {
+    display : flex;
+    margin : 0;
+    padding : 0;
+    list-style: none;
+}
+
+.main-navigation_items li {
+    margin : 0 1rem;
+}
+
+.main-navigation_items a {
+    text-decoration: none;
+    color : #000;
+}
+
+.main-navigation_items a:hover,
+.main-navigation_items a:active {
+    color :rgba(201, 255, 4, 0.911);
+}
+
+.main-navigation_items a.active {
+    color : white;
+}
