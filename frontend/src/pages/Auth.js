@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Auth.css';
+import AuthContext from '../context/auth-context';
 
 class AuthPage extends Component{
 
@@ -7,13 +8,21 @@ class AuthPage extends Component{
         isLogin : true
     };
 
+    static contextType = AuthContext;
+
     constructor(props) {
         super(props);
         this.emailEl = React.createRef();
         this.passwordEl = React.createRef();
     }
 
-    submitHandler = ( event ) => {
+    switchModeHandler = () => {
+        this.setState(prevState => {
+            return { isLogin : !prevState.isLogin };
+        });
+    };
+
+    submitHandler = event => {
         event.preventDefault();
         const email = this.emailEl.current.value;
         const password = this.passwordEl.current.value;
@@ -25,7 +34,7 @@ class AuthPage extends Component{
         let requestBody = {
             query : `
                 query {
-                    login( email : "${ email }", password : " ${ password }") {
+                    login( email : "${email}", password : "${password}") {
                         userId
                         token
                         tokenExpiration
@@ -60,19 +69,18 @@ class AuthPage extends Component{
             return res.json();
         })
         .then( resData => {
-            console.log(resData);
+            if(resData.data.login.token){
+                this.context.login(
+                    resData.data.login.token,
+                    resData.data.login.userId,
+                    resData.data.login.tokenExpiration);
+            }
         })
         .catch(err => {
             console.log(err);
         });
 
     };
-
-    switchModeHandler = () => {
-        this.setState(prevState => {
-            return { isLogin : !prevState.isLogin };
-        })
-    }
 
     render(){
         return (
