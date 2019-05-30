@@ -17,7 +17,7 @@ const modal = props => (
                 </button>
             )}
             {props.canConfirm && (
-                <button className="btn" onConfirm={props.onConfirm}>
+                <button className="btn" onClick={props.onConfirm}>
                     Confirm
                 </button>
             )}
