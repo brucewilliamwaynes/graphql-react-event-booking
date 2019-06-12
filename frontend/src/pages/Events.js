@@ -15,6 +15,8 @@ class EventsPage extends Component{
         selectedEvent : null
     };
 
+    isActive = true;
+
     static contextType = AuthContext;
 
     constructor(props) {
@@ -137,12 +139,16 @@ class EventsPage extends Component{
             return res.json();
         })
         .then( resData => {
-            const events = resData.data.evetns;
-            this.setState({events : events, isLoading : false});
+            const events = resData.data.events;
+            if(this.isActive){
+                this.setState({events : events, isLoading : false});
+            }
         })
         .catch(err => {
             console.log(err);
-            this.setState({isLoading : false});
+            if(this.isActive){
+                this.setState({isLoading : false});
+            }
         });
     }
 
@@ -154,6 +160,10 @@ class EventsPage extends Component{
     }
 
     bookEventHandler = () => {
+        if(!this.context.token){
+            this.setState({selectedEvent : null});
+            return;
+        }
         const requestBody = {
             query : `
                 mutation {
@@ -181,10 +191,15 @@ class EventsPage extends Component{
         })
         .then( resData => {
             console.log(resData);
+            this.setState({selectedEvent : null});
         })
         .catch(err => {
             console.log(err);
         });
+    }
+
+    componentWillUnmount(){
+        this.isActive = false;
     }
 
     render(){
@@ -227,7 +242,7 @@ class EventsPage extends Component{
                            canCancel
                            onConfirm = {this.bookEventHandler} 
                            onCancel = {this.modalCancelHandler}
-                           confirmText = "Book"
+                           confirmText = {this.context.token ? 'Book' : 'Confirm'}
                            >
                         <h1>{this.state.selectedEvent.title}</h1>
                         <h2>$ {this.state.selectedEvent.price} - {new Date(this.state.selectedEvent.date).toLocaleDateString()}</h2>
