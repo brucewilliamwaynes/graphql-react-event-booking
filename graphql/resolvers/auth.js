@@ -5,33 +5,28 @@ const User = require('../../models/user');
 
 module.exports = {
 
-    createUser : args => {
-        return User
-        .findOne({
-            email: args.userInput.email
-        })
-        .then(user => {
-            if(user) {
+    createUser : async args => {
+
+        try{
+            const existingUser = await User.findOne({email : this.args.userInput.email});
+            if(existingUser){
                 throw new Error('User exists already.');
             }
-            return bcrypt.hash(args.userInput.password,12);
-        })
-        .then(hashedPassword => {
+            const hashedPassword = await bcrypt.hash(args.userInput.password, 12);
+
             const user = new User({
                 email : args.userInput.email,
                 password : hashedPassword
-            }); 
-            return user.save();
-        })
-        .then( result => {
-            return { ...result._doc, password : null, _id: result.id};
-        })
-        .catch(err => {
-            throw err;
-        });
-    },
+            });
 
-    login : async ( { email, password } ) => {
+            const result = await user.save();
+
+            return{...result._doc, password: null, _id:result.id};
+        } catch(err){
+            throw err;
+        }
+    },
+    login : async ({ email, password }) => {
         const user = await User.findOne( {email : email });
 
         if(!user){

@@ -3,7 +3,7 @@ import './BookingList.css';
 
 const bookingList = props => (
     <ul className="bookings_list">
-        {props.bookings.map( booking => {
+        {props.bookings.map(booking => {
             return (
             <li key={booking._id} className="bookings_item">
                 <div className="bookings_item_data">
@@ -17,3 +17,5 @@ const bookingList = props => (
         })}
     </ul>
 );
+
+export default bookingList;

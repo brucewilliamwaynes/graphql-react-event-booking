@@ -15,7 +15,7 @@ const eventList = props => {
                 date = {event.date}
                 userId = {props.authUserId}
                 creatorId = {event.creator._id}
-                onDetails = {props.onViewDetail}
+                onDetail = {props.onViewDetail}
             />
         );
     });

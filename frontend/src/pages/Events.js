@@ -28,33 +28,31 @@ class EventsPage extends Component{
     }
 
     componentDidMount(){
-        if(this.state.events.length !== 0){
-            this.fetchEvents();
-        }
+        this.fetchEvents();
     }
 
     startCreateEventhandler = () => {
         this.setState({creating : true});
-    }
+    };
 
     modalConfirmHandler = () => {
+        this.setState({ creating: false });
         const title = this.titleElRef.current.value;
         const price = +this.priceElRef.current.value;
         const date = this.dateElRef.current.value;
         const description = this.descriptionElRef.current.value;
 
         if(title.trim().length === 0 || price <= 0 || date.trim().length === 0 || description.trim().length === 0){
-            this.setState({creating : false});
             return;
         }
 
-        const event = {title: title, price: price, date: date, description: description};
+        const event = {title, price, date, description};
         console.log(event);
 
         const requestBody = {
             query : `
-                mutation CreateEvent($title : String!, $description : String!, $price: Float!, $date: String!) {
-                  createEvent( eventInput : {title : $title, description : $description, price : $price, date : $date}) {
+                mutation CreateEvent($title: String!,$description: String!,$price: Float!,$date: String!) {
+                  createEvent(eventInput : {title: $title, description: $description, price: $price, date: $date}) {
                         _id
                         title
                         description
@@ -88,17 +86,17 @@ class EventsPage extends Component{
         })
         .then( resData => {
             this.setState(prevState => {
-                const updatedEvents = [ ...prevState.events];
-                updatedEvents.push({
-                    _id : resData.data.createEvent._id,
-                    title : resData.data.createEvent.title,
-                    description :resData.data.createEvent.description,
-                    date : resData.data.createEvent.date,
-                    price : resData.data.createEvent.price,
-                    creator : {
-                        _id : this.context.userId
-                    }
-                });
+                const updatedEvents = [...prevState.events];
+                    updatedEvents.push({
+                        _id : resData.data.createEvent.id,
+                        title : resData.data.createEvent.title,
+                        description : resData.data.createEvent.description,
+                        date : resData.data.createEvent.date,
+                        price : resData.data.createEvent.price,
+                        creator : {
+                            _id : this.context.userId
+                        }
+                    });
                 return {events : updatedEvents};
             });
         })
@@ -117,7 +115,7 @@ class EventsPage extends Component{
         const requestBody = {
             query : `
                 query {
-                  events {
+                    events {
                         _id
                         title
                         description
@@ -161,9 +159,9 @@ class EventsPage extends Component{
     showDetailHandler = eventId => {
         this.setState(prevState => {
             const selectedEvent = prevState.events.find(e => e._id === eventId);
-            return (this.setState({selectedEvent : selectedEvent}));
+            return ({selectedEvent : selectedEvent});
         });
-    }
+    };
 
     bookEventHandler = () => {
         if(!this.context.token){
@@ -205,7 +203,7 @@ class EventsPage extends Component{
         .catch(err => {
             console.log(err);
         });
-    }
+    };
 
     componentWillUnmount(){
         this.isActive = false;
@@ -218,12 +216,12 @@ class EventsPage extends Component{
                 {(this.state.creating || this.state.selectedEvent) && <Backdrop></Backdrop>}
                 {this.state.creating && (
                     <Modal title="Add title" 
-                           canConfirm 
-                           canCancel 
-                           onConfirm = {this.modalConfirmHandler} 
-                           onCancel = {this.modalCancelHandler}
-                           confirmText = "Confirm"
-                           >
+                            canCancel   
+                            canConfirm 
+                            onCancel = {this.modalCancelHandler}
+                            onConfirm = {this.modalConfirmHandler}
+                            confirmText = "Confirm"
+                        >
                         <form>
                             <div className="form-control">
                                 <label htmlFor="title">Title</label>
@@ -247,11 +245,11 @@ class EventsPage extends Component{
 
                 {this.state.selectedEvent && (
                     <Modal title={this.state.selectedEvent.title} 
-                           canConfirm
-                           canCancel
-                           onConfirm = {this.bookEventHandler} 
-                           onCancel = {this.modalCancelHandler}
-                           confirmText = {this.context.token ? 'Book' : 'Confirm'}
+                            canCancel
+                            canConfirm
+                            onCancel = {this.modalCancelHandler}
+                            onConfirm = {this.bookEventHandler}
+                            confirmText = {this.context.token ? 'Book' : 'Confirm'}
                            >
                         <h1>{this.state.selectedEvent.title}</h1>
                         <h2>$ {this.state.selectedEvent.price} - {new Date(this.state.selectedEvent.date).toLocaleDateString()}</h2>
@@ -263,7 +261,7 @@ class EventsPage extends Component{
                 {this.context.token && (
                     <div className="events-control">
                         <p>Share your own Events!</p>
-                        <button className="btn" onClick={this.startCreateEventhandler}>Create event</button>
+                        <button className="btn" onClick={this.startCreateEventHandler}>Create event</button>
                     </div>
                     )}
                     {this.state.isLoading ? 

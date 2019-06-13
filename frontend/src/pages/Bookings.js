@@ -13,9 +13,7 @@ class BookingsPage extends Component{
     static contextType = AuthContext;
 
     componentDidMount() {
-        if(this.state.events.length !== 0){
-            this.fecthBookings();
-        }
+        this.fecthBookings();
     }
 
     fecthBookings = () => {
@@ -23,7 +21,7 @@ class BookingsPage extends Component{
         const requestBody = {
             query : `
                 query {
-                  bookings {
+                    bookings {
                         _id
                         createdAt
                         event {

@@ -3,7 +3,6 @@ import './Auth.css';
 import AuthContext from '../context/auth-context';
 
 class AuthPage extends Component{
-
     state = {
         isLogin : true
     };
@@ -34,7 +33,7 @@ class AuthPage extends Component{
         let requestBody = {
             query : `
                 query  Login($email : String!, $password: String!){
-                    login( email : $email, password : $password) {
+                    login(email : $email, password : $password) {
                         userId
                         token
                         tokenExpiration
@@ -51,7 +50,7 @@ class AuthPage extends Component{
             requestBody = {
                 query : `
                     mutation CreateUser($email : String!, $password: String!){
-                        createUser( userInput : {email: $email, password: $password}) {
+                        createUser(userInput : {email: $email, password: $password}) {
                             _id
                             email
                         }
@@ -81,29 +80,29 @@ class AuthPage extends Component{
                 this.context.login(
                     resData.data.login.token,
                     resData.data.login.userId,
-                    resData.data.login.tokenExpiration);
+                    resData.data.login.tokenExpiration
+                );
             }
         })
         .catch(err => {
             console.log(err);
         });
-
     };
 
     render(){
         return (
-            <form className="auth-form" onSubmit = { this.submitHandler }>
+            <form className="auth-form" onSubmit = {this.submitHandler}>
                 <div className = "form-control">
                     <label htmlFor="email">E-Mail</label>
-                    <input type="email" id="email" ref = { this.emailEl }/>
+                    <input type="email" id="email" ref = {this.emailEl}/>
                 </div>
                 <div className = "form-control">
                     <label htmlFor="password">Password</label>
-                    <input type="password" id="password" ref = { this.passwordEl }/>
+                    <input type="password" id="password" ref = {this.passwordEl}/>
                 </div>
                 <div className = "form-actions">
                     <button type="submit">Submit</button>
-                    <button type="button" onClick = { this.switchModeHandler }>
+                    <button type="button" onClick = {this.switchModeHandler}>
                         Switch to { this.state.isLogin ? 'Signup' : 'Login' }
                     </button>
                 </div>
